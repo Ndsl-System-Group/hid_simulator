@@ -29,14 +29,15 @@ lazy_static! {
 
 pub struct KeyboardHelper<'a> {
     device: &'a mut Device<Keyboard>,
-    input: &'a mut KeyboardInput
+    input: &'a mut KeyboardInput,
 }
 
 impl<'a> KeyboardHelper<'a> {
-    pub fn new(device: &'a mut Device<Keyboard>, input: &'a mut KeyboardInput) -> KeyboardHelper<'a> {
-        KeyboardHelper {
-            device, input
-        }
+    pub fn new(
+        device: &'a mut Device<Keyboard>,
+        input: &'a mut KeyboardInput,
+    ) -> KeyboardHelper<'a> {
+        KeyboardHelper { device, input }
     }
 
     /// 'press_one' 按下单个按键并松开
@@ -77,7 +78,7 @@ impl<'a> KeyboardHelper<'a> {
             match SPECIAL_KEY_MAPPER.get(&ch) {
                 Some(key_vec) => {
                     self.press_multi(key_vec)?;
-                },
+                }
                 None => {
                     panic!("Unsupport char {}", ch);
                 }
@@ -103,8 +104,10 @@ impl<'a> KeyboardHelper<'a> {
 
     fn ch_to_key(ch: char) -> Key {
         let ch_str = ch.to_string();
-        Key::from_str(&ch_str).map_err(|_e| {
-            panic!("unexpected error in Key::from_str when transform {}", ch);
-        }).unwrap()
+        Key::from_str(&ch_str)
+            .map_err(|_e| {
+                panic!("unexpected error in Key::from_str when transform {}", ch);
+            })
+            .unwrap()
     }
 }
