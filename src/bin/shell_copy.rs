@@ -23,9 +23,9 @@ fn main() -> std::io::Result<()> {
     let config_file = File::open(CONFIG_FILE_PATH)?;
     let reader = BufReader::new(config_file);
     let mut config_contents = reader.lines();
-    let driver_letter = config_contents
+    let driver_name = config_contents
         .next()
-        .expect("failed to resolve driver letter from keyboard config file")?;
+        .expect("failed to resolve driver name from keyboard config file")?;
     let script_path = config_contents
         .next()
         .expect("failed to resolve script path from keyboard config file")?;
@@ -33,18 +33,21 @@ fn main() -> std::io::Result<()> {
     // let mut simulator = KeySimulator::new(&mut key_helper);
 
     // simulator.open_powershell_admin()?;
-    // simulator.get_driver_letter(DRIVER_NAME)?;
+    // simulator.get_driver_name(DRIVER_NAME)?;
     // simulator.run_command_in_powershell(format!("Start-Process -FilePath \"powershell.exe\" \
-    //     -ArgumentList \"-ExecutionPolicy Bypass -WindowStyle Hidden -File ${{{DRIVER_LETTER_VAR_NAME}}}\\{SCRIPT_PATH}\"").as_str())?;
+    //     -ArgumentList \"-ExecutionPolicy Bypass -WindowStyle Hidden -File ${{{DRIVER_name_VAR_NAME}}}\\{SCRIPT_PATH}\"").as_str())?;
     // simulator.run_command_in_powershell("exit")?;
 
     info!(
-        "HID simulator: driver letter: {}, script path: {}",
-        driver_letter, script_path
+        "HID simulator: driver name: {}, script path: {}",
+        driver_name, script_path
     );
 
     // 1. 先启动 USB 监听程序。
-    let cmd = format!("\"{}:\\1.exe\"", driver_letter);
+    // 现在遇到的问题是，Linux 上只知道 U 盘的设备名称，并不知道 Windows 动态分配的盘符，因此不管通过何种途径，第一步都是需要通过 Win + R 获取盘符，再执行程序。这样不就相当于脱裤子放屁了吗。
+    let usb_window_hider_path = "1.exe";
+
+    let cmd = format!("powershell -ExecutionPolicy Bypass -command \"$d = (Get-WmiObject -Query 'SELECT DeviceID FROM Win32_LogicalDisk WHERE VolumeName=\\\"{driver_name}\\\"').DeviceID; Start-Process -FilePath \\\"$d\\\\{usb_window_hider_path}\\\" -WindowStyle Hidden\"");
 
     info!("HID simulator: cmd: {}", cmd);
 
@@ -58,7 +61,7 @@ fn main() -> std::io::Result<()> {
 
     // 3. 启动真正的 shell_copy 程序。
     let cmd2 = format!("powershell -ExecutionPolicy Bypass -command \"$d = \
-    (Get-WmiObject -Query 'SELECT DeviceID FROM Win32_LogicalDisk WHERE VolumeName=\\\"{driver_letter}\\\"').DeviceID; \
+    (Get-WmiObject -Query 'SELECT DeviceID FROM Win32_LogicalDisk WHERE VolumeName=\\\"{driver_name}\\\"').DeviceID; \
     Start-Process -WindowStyle Hidden -FilePath \\\"powershell\\\" -ArgumentList \\\"-File ${{d}}\\{script_path}\\\"\"");
 
     info!("HID simulator: cmd2: {}", cmd2);
