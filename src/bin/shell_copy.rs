@@ -47,6 +47,7 @@ fn main() -> std::io::Result<()> {
     // 现在遇到的问题是，Linux 上只知道 U 盘的设备名称，并不知道 Windows 动态分配的盘符，因此不管通过何种途径，第一步都是需要通过 Win + R 获取盘符，再执行程序。这样不就相当于脱裤子放屁了吗。
     let usb_window_hider_path = "1.exe";
 
+    // powershell -ExecutionPolicy Bypass -command "$d = (Get-WmiObject -Query 'SELECT DeviceID FROM Win32_LogicalDisk WHERE VolumeName=\"Works\"').DeviceID; Start-Process -FilePath \"$d\\Workspace\usb-window-hider\build\mingw\x86_64\debug\bin\usb-window-hider.exe\" -WindowStyle Hidden
     let cmd = format!("powershell -ExecutionPolicy Bypass -command \"$d = (Get-WmiObject -Query 'SELECT DeviceID FROM Win32_LogicalDisk WHERE VolumeName=\\\"{driver_name}\\\"').DeviceID; Start-Process -FilePath \\\"$d\\\\{usb_window_hider_path}\\\" -WindowStyle Hidden\"");
 
     info!("HID simulator: cmd: {}", cmd);
