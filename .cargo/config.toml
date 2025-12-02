@@ -1,0 +1,4 @@
+[target.aarch64-unknown-linux-musl]
+linker = "/opt/linux/x86-arm/aarch64-v01c01-linux-musl-gcc/bin/aarch64-v01c01-linux-musl-gcc"
+ar = "/opt/linux/x86-arm/aarch64-v01c01-linux-musl-gcc/bin/aarch64-v01c01-linux-musl-ar"
+
